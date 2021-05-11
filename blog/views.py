@@ -54,11 +54,21 @@ def post_detail(request, year, month, day, post):
             new_comment.save()
     else :
         comment_form = CommentForm()
+
+    # Fetching Similar Posts
+    # getting list of tag_ids of current post
+    post_tags_ids = post.taggs.values_list('id', flat=True)
+
+    # getting all other posts that have the same tag ids except the current post
+    similar_posts = Post.published.filter(taggs__in = post_tags_ids).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags = Count('taggs')).order_by('-same_tags', '-publish')[:4]
+
     return render(request, 'blog/post/detail.html', 
                   {'post': post,
                    'comments':comments, 
                    'new_comments':new_comment,
-                   'comment_form':comment_form                   
+                   'comment_form':comment_form,
+                   'similar_posts' : similar_posts                   
                    })
 
 
