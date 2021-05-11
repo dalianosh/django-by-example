@@ -20,7 +20,7 @@ def post_list(request, tag_slug=None):
         tag = get_object_or_404(Tag, slug=tag_slug)
         object_list = object_list.filter(taggs__in = [tag])
         
-    paginator = Paginator(object_list, 2)
+    paginator = Paginator(object_list,4)
     page = request.GET.get('page')
     
     try:
@@ -75,7 +75,7 @@ def post_detail(request, year, month, day, post):
 class PostListView(ListView):
     queryset = Post.published.all()
     context_object_name = 'posts'
-    paginate_by = 3
+    paginate_by = 5
     template_name = 'blog/post/list.html'
     
     
